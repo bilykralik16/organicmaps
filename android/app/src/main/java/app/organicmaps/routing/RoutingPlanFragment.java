@@ -60,6 +60,7 @@ public class RoutingPlanFragment extends Fragment implements View.OnLayoutChange
   private int mPeekHeightMargins;
   private View mButtonsLayout;
   private int mTopInset;
+  private boolean mRoutingContentActive = true;
 
   // Single source of truth for the sheet's visibility: planning wants it AND no place page is covering it.
   private final MediatorLiveData<Boolean> mSheetVisible = new MediatorLiveData<>();
@@ -266,7 +267,7 @@ public class RoutingPlanFragment extends Fragment implements View.OnLayoutChange
 
   private void setRoutingContentActive(boolean active)
   {
-    mDrivingOptionsBtn.setEnabled(active);
+    mRoutingContentActive = active;
     updateRoutingOptions(RoutingController.get().getLastRouterType());
     mReverseRouteBtn.setEnabled(active);
     mChartPanel.setAlpha(active ? 1.0f : 0.2f);
@@ -372,8 +373,10 @@ public class RoutingPlanFragment extends Fragment implements View.OnLayoutChange
 
   private void updateRoutingOptions(@NonNull Router router)
   {
-    mDrivingOptionsContainer.setVisibility(RoutingOptions.hasSettings(router) ? View.VISIBLE : View.GONE);
-    updateBadgeCount(RoutingOptions.getActiveRoadTypes(router).size());
+    final boolean hasSettings = RoutingOptions.hasSettings(router);
+    mDrivingOptionsBtn.setEnabled(mRoutingContentActive && hasSettings);
+    mDrivingOptionsContainer.setAlpha(hasSettings ? 1.0f : 0.5f);
+    updateBadgeCount(hasSettings ? RoutingOptions.getActiveRoadTypes(router).size() : 0);
   }
 
   private void updateBuildProgress(int progress, @NonNull Router router)
