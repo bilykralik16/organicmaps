@@ -30,8 +30,11 @@ public class RoutingPlanOptionsTest
     when(fragment.getView()).thenReturn(mock(View.class));
     TextView badge = mock(TextView.class);
     View container = mock(View.class);
+    View settingsButton = mock(View.class);
     setField(fragment, "mDrivingOptionsBadge", badge);
     setField(fragment, "mDrivingOptionsContainer", container);
+    setField(fragment, "mDrivingOptionsBtn", settingsButton);
+    setField(fragment, "mRoutingContentActive", true);
     setField(fragment, "mRouterTypes", mock(RadioGroup.class));
     setField(fragment, "mRoutingBottomMenuController", mock(RoutingBottomMenuController.class));
     RoutingController controller = mock(RoutingController.class);
@@ -49,27 +52,32 @@ public class RoutingPlanOptionsTest
 
       updateProgress(fragment, Router.Vehicle);
       verify(badge).setText("3");
-      verify(container).setVisibility(View.VISIBLE);
-      clearInvocations(badge, container);
+      verify(container).setAlpha(1.0f);
+      verify(settingsButton).setEnabled(true);
+      clearInvocations(badge, container, settingsButton);
 
       updateProgress(fragment, Router.Bicycle);
       verify(badge).setVisibility(View.GONE);
-      verify(container).setVisibility(View.VISIBLE);
-      clearInvocations(badge, container);
+      verify(container).setAlpha(1.0f);
+      verify(settingsButton).setEnabled(true);
+      clearInvocations(badge, container, settingsButton);
 
       updateProgress(fragment, Router.Pedestrian);
       verify(badge).setText("1");
-      verify(container).setVisibility(View.VISIBLE);
-      clearInvocations(badge, container);
+      verify(container).setAlpha(1.0f);
+      verify(settingsButton).setEnabled(true);
+      clearInvocations(badge, container, settingsButton);
 
       updateProgress(fragment, Router.Transit);
       verify(badge).setVisibility(View.GONE);
-      verify(container).setVisibility(View.VISIBLE);
-      clearInvocations(badge, container);
+      verify(container).setAlpha(1.0f);
+      verify(settingsButton).setEnabled(true);
+      clearInvocations(badge, container, settingsButton);
 
       updateProgress(fragment, Router.Ruler);
       verify(badge).setVisibility(View.GONE);
-      verify(container).setVisibility(View.GONE);
+      verify(container).setAlpha(0.5f);
+      verify(settingsButton).setEnabled(false);
     }
   }
 
@@ -79,11 +87,14 @@ public class RoutingPlanOptionsTest
     RoutingPlanFragment fragment = mock(RoutingPlanFragment.class, CALLS_REAL_METHODS);
     TextView badge = mock(TextView.class);
     View container = mock(View.class);
+    View settingsButton = mock(View.class);
     RadioGroup types = mock(RadioGroup.class);
     View button = mock(View.class);
     when(types.findViewById(1)).thenReturn(button);
     setField(fragment, "mDrivingOptionsBadge", badge);
     setField(fragment, "mDrivingOptionsContainer", container);
+    setField(fragment, "mDrivingOptionsBtn", settingsButton);
+    setField(fragment, "mRoutingContentActive", true);
     setField(fragment, "mRouterTypes", types);
     RoutingController controller = mock(RoutingController.class);
     try (MockedStatic<RoutingController> routing = mockStatic(RoutingController.class);
@@ -99,7 +110,8 @@ public class RoutingPlanOptionsTest
       listener.getValue().onClick(button);
       verify(controller).setRouterType(Router.Bicycle);
       verify(badge).setVisibility(View.GONE);
-      verify(container).setVisibility(View.VISIBLE);
+      verify(container).setAlpha(1.0f);
+      verify(settingsButton).setEnabled(true);
     }
   }
 
